@@ -1,8 +1,0 @@
-streamlit
-langchain
-langchain-groq
-langchain-community
-python-dotenv
-ddgs
-wikipedia
-pydantic
