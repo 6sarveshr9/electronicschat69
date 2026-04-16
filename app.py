@@ -1,12 +1,22 @@
 import streamlit as st
 import os
-from dotenv import load_dotenv
-
-
-from dotenv import load_dotenv
-from langchain.agents import create_agent  # Modern 1.0 import
+from langchain.agents import create_agent
 from tools import search_tool, wiki_tool, save_tool
 
+# Only try to load dotenv if we are running locally
+# Streamlit Cloud handles the keys automatically from 'Secrets'
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass 
+
+# Now get the key from either .env (local) or Secrets (cloud)
+api_key = os.getenv("GROQ_API_KEY") or st.secrets.get("GROQ_API_KEY")
+
+if not api_key:
+    st.error("GROQ_API_KEY not found! Please add it to Streamlit Secrets.")
+    st.stop()
 
 
 load_dotenv()
