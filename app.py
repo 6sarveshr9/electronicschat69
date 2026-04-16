@@ -1,9 +1,13 @@
 import streamlit as st
-from langchain.agents import create_agent
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
-from tools import search_tool, wiki_tool, save_tool
 import os
 from dotenv import load_dotenv
+
+
+from dotenv import load_dotenv
+from langchain.agents import create_agent  # Modern 1.0 import
+from tools import search_tool, wiki_tool, save_tool
+
+
 
 load_dotenv()
 
@@ -43,3 +47,15 @@ if prompt := st.chat_input("Enter component (e.g., 'ESP32 Pinout'):"):
         # Add to session history
         history.add_user_message(prompt)
         history.add_ai_message(output)
+        # Inside app.py, where you create the agent:
+if "agent" not in st.session_state:
+    try:
+        # Use the string-based model identifier for 2026 Groq
+        st.session_state.agent = create_agent(
+            model="groq:llama-3.3-70b-versatile",
+            tools=[search_tool, wiki_tool, save_tool],
+            system_prompt="You are a Senior Electronics Engineer. Use your tools to analyze circuits."
+        )
+    except Exception as e:
+        st.error(f"Waiting for Groq connection... {e}")
+        st.stop()
