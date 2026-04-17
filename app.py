@@ -2,6 +2,7 @@ import streamlit as st
 import os
 from langchain.agents import create_agent
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from langchain_groq import ChatGroq
 from tools import search_tool, wiki_tool, save_tool
 
 # --- 1. Robust 2026 Import Bridge ---
@@ -32,14 +33,12 @@ else:
 # --- 4. Initialize Agent ---
 if "agent" not in st.session_state:
     try:
-        # Using Llama 3.3 70B which is currently the best for electronics logic
         st.session_state.agent = create_agent(
             model="groq:llama-3.3-70b-versatile",
             tools=[search_tool, wiki_tool, save_tool],
             system_prompt=(
-                "You are a Senior Electronics Engineer. You are precise, technical, and helpful. "
-                "When asked about components, use search_tool to find real datasheets. "
-                "Always provide pinout diagrams in a code block or table format."
+                "You are a Senior Electronics Engineer. Use search_tool for specific component data. "
+                "Provide pinouts in tables and circuit advice in clear steps."
             )
         )
     except Exception as e:
@@ -67,27 +66,33 @@ if prompt := st.chat_input("Ask about a component (e.g., 'Pinout of NE555 timer'
             with st.status("Engineer is analyzing...", expanded=True) as status:
                 add_script_run_context() 
 
-                # Execute with history context
                 result = st.session_state.agent.invoke(
                     {"messages": history.messages + [("user", prompt)]}
                 )
                 
                 full_response = result["messages"][-1].content
-                
-                history.add_user_message(prompt)
-                history.add_ai_message(full_response)
-                
                 status.update(label="Analysis Complete!", state="complete", expanded=False)
 
             st.write(full_response)
+            history.add_user_message(prompt)
+            history.add_ai_message(full_response)
             
         except Exception as e:
-            # Check for the specific 'Failed to call a function' error
-            if "tool_use_failed" in str(e):
-                st.warning("⚠️ The AI struggled to format the tool request. Retrying with a simpler query...")
-                # Automatic retry logic for tool hallucinations
-                result = st.session_state.agent.invoke({"messages": [("user", f"Briefly answer: {prompt}")]})
-                st.write(result["messages"][-1].content)
+            # Check for the specific tool formatting/BadRequest error
+            if "tool_use_failed" in str(e) or "400" in str(e):
+                st.warning("⚠️ Tool-parser glitch. Switching to internal knowledge fallback...")
+                
+                # Directly call the LLM to bypass the failing tool-logic
+                fallback_llm = ChatGroq(model="groq:llama-3.3-70b-versatile")
+                fallback_resp = fallback_llm.invoke([
+                    ("system", "You are a Senior Electronics Engineer. Answer the user's question precisely using your internal knowledge."),
+                    ("user", prompt)
+                ])
+                
+                final_text = fallback_resp.content
+                st.write(final_text)
+                history.add_user_message(prompt)
+                history.add_ai_message(final_text)
             else:
                 st.error("🚨 Technical Error:")
                 st.exception(e)
