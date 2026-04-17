@@ -1,8 +1,10 @@
-langchain
+streamlit
+langchain>=0.3.0
 langchain-groq
 langchain-community
+langchain-core
 langgraph
-streamlit
 python-dotenv
-ddgs
+duckduckgo-search
 wikipedia
+pydantic>=2.0
