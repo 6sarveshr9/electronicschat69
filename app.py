@@ -2,9 +2,16 @@ import streamlit as st
 import os
 from langchain.agents import create_agent
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
-from streamlit.runtime.scriptrunner import add_script_run_context
+from streamlit.runtime.scriptrunner.script_run_context import add_script_run_context
 from tools import search_tool, wiki_tool, save_tool
-
+try:
+    from streamlit.runtime.scriptrunner.script_run_context import add_script_run_context
+except ImportError:
+    try:
+        from streamlit.runtime.scriptrunner import add_script_run_context
+    except ImportError:
+        def add_script_run_context(thread=None):
+            return None
 # 1. Page Configuration (Must be the first Streamlit command)
 st.set_page_config(page_title="Electronics Expert AI", page_icon="⚡", layout="centered")
 
