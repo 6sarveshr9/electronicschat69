@@ -1,7 +1,29 @@
+import sys
+print(f"DEBUG: Python version {sys.version}")
+print(f"DEBUG: Installed packages: {[p for p in sys.modules.keys() if 'langchain' in p]}")
+
+import streamlit as st
+# ... your other imports
 import streamlit as st
 import os
-from langchain.agents import create_agent
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from langchain_groq import ChatGroq
 from tools import search_tool, wiki_tool, save_tool
+# 1. Force the environment variable so the Agent can "see" the key
+if "GROQ_API_KEY" in st.secrets:
+    os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+
+# 2. Initialize the Agent in the session state (so it doesn't reload every click)
+if "agent" not in st.session_state:
+    try:
+        st.session_state.agent = create_agent(
+            model="groq:llama-3.3-70b-versatile",
+            tools=[search_tool, wiki_tool, save_tool],
+            system_prompt="You are a Senior Electronics Engineer. Help the user with circuit design and component selection."
+        )
+    except Exception as e:
+        st.error(f"Failed to connect to AI Brain: {e}")
+        st.stop() # Stops the app here so it doesn't crash further down
 
 # Only try to load dotenv if we are running locally
 # Streamlit Cloud handles the keys automatically from 'Secrets'

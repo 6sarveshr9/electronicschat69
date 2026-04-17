@@ -22,7 +22,7 @@ agent = create_agent(
 
 # 3. Running the Analysis
 print("--- Electronics Intelligence Agent Online ---")
-user_query = input("Which circuit/component are we verifying today? ")
+user_query = input("How you doing today? ")
 
 # Input must be a list of messages in v1.0
 response = agent.invoke({"messages": [("user", user_query)]})
