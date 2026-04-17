@@ -4,14 +4,23 @@ from langchain.agents import create_agent
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from streamlit.runtime.scriptrunner.script_run_context import add_script_run_context
 from tools import search_tool, wiki_tool, save_tool
+# --- Updated Import Block for 2026 ---
 try:
-    from streamlit.runtime.scriptrunner.script_run_context import add_script_run_context
+    # 1. Newest 2026 Path
+    from streamlit.runtime.scriptrunner_utils.script_run_context import add_script_run_context
 except ImportError:
     try:
-        from streamlit.runtime.scriptrunner import add_script_run_context
+        # 2. Late 2025 Path
+        from streamlit.runtime.scriptrunner.script_run_context import add_script_run_context
     except ImportError:
-        def add_script_run_context(thread=None):
-            return None
+        try:
+            # 3. Standard Path
+            from streamlit.runtime.scriptrunner import add_script_run_context
+        except ImportError:
+            # 4. Fallback (Prevents Crash)
+            def add_script_run_context(thread=None):
+                return None
+# -------------------------------------
 # 1. Page Configuration (Must be the first Streamlit command)
 st.set_page_config(page_title="Electronics Expert AI", page_icon="⚡", layout="centered")
 
