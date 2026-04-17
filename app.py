@@ -6,6 +6,7 @@ import streamlit as st
 # ... your other imports
 import streamlit as st
 import os
+from langchain.agents import create_agent
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_groq import ChatGroq
 from tools import search_tool, wiki_tool, save_tool
