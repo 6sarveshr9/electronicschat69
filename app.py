@@ -6,6 +6,13 @@ import streamlit as st
 # ... your other imports
 import streamlit as st
 import os
+
+# This part bridges Streamlit Secrets to the Agent's brain
+if "GROQ_API_KEY" in st.secrets:
+    os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+else:
+    st.error("GROQ_API_KEY not found in Streamlit Secrets!")
+    st.stop()
 from langchain.agents import create_agent
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_groq import ChatGroq
