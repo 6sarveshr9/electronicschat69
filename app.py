@@ -13,6 +13,7 @@ if "GROQ_API_KEY" in st.secrets:
 else:
     st.error("GROQ_API_KEY not found in Streamlit Secrets!")
     st.stop()
+    st.write("DEBUG: Attempting to contact Groq...")
 from langchain.agents import create_agent
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_groq import ChatGroq
