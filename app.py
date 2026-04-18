@@ -6,6 +6,7 @@ from langchain_groq import ChatGroq
 from tools import search_tool, wiki_tool, save_tool
 
 # --- 1. Robust 2026 Import Bridge ---
+add_script_run_context = None
 try:
     from streamlit.runtime.scriptrunner_utils.script_run_context import add_script_run_context # type: ignore
 except ImportError:
@@ -22,14 +23,13 @@ except ImportError:
 st.set_page_config(page_title="LSD Ai | Electronics Expert", page_icon="⚡", layout="centered")
 
 # --- DESIGN: Custom Background Image ---
-# FIXED: Using the clean Raw URL string
 my_bg_url = "https://raw.githubusercontent.com/6sarveshr9/electronicschat69/main/gargantua-endurance-5120x3662-25445.jpg"
 
 st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("{raw.githubusercontent.com/6sarveshr9/electronicschat69/main/gargantua-endurance-5120x3662-25445.jpg}");
+        background-image: url("{my_bg_url}");
         background-attachment: fixed;
         background-size: cover;
     }}
@@ -93,7 +93,9 @@ if prompt := st.chat_input("What brings you here today?"):
         
         try:
             with st.status("I'm working on it...", expanded=True) as status:
-                add_script_run_context() 
+                # Safe execution of context attachment
+                if add_script_run_context:
+                    add_script_run_context() 
 
                 result = st.session_state.agent.invoke(
                     {"messages": history.messages + [("user", prompt)]}
