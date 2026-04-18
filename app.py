@@ -22,14 +22,14 @@ except ImportError:
 st.set_page_config(page_title="LSD Ai | Electronics Expert", page_icon="⚡", layout="centered")
 
 # --- DESIGN: Custom Background Image ---
-# REPLACE THE LINK BELOW with your Raw GitHub Link
-my_bg_url = "https://github.com/6sarveshr9/electronicschat69/blob/4cb5978bd3a36d8ceea7a3eb221f896d6d0c7e14/gargantua-endurance-5120x3662-25445.jpg?raw=true"
+# FIXED: Using the clean Raw URL string
+my_bg_url = "https://raw.githubusercontent.com/6sarveshr9/electronicschat69/main/gargantua-endurance-5120x3662-25445.jpg"
 
 st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("{https://github.com/6sarveshr9/electronicschat69/blob/a4fb999ede6803cdd93eaa4b6d1a37d3983c26ae/gargantua-endurance-5120x3662-25445.jpg}");
+        background-image: url("{raw.githubusercontent.com/6sarveshr9/electronicschat69/main/gargantua-endurance-5120x3662-25445.jpg}");
         background-attachment: fixed;
         background-size: cover;
     }}
