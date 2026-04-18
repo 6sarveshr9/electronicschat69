@@ -71,7 +71,7 @@ if prompt := st.chat_input("What brings you here today?"):
         response_placeholder = st.empty()
         
         try:
-            with st.status("Working on it...", expanded=True) as status:
+            with st.status("There you go...", expanded=True) as status:
                 # This ensures the search tool stays connected to your session
                 add_script_run_context() 
 
@@ -81,7 +81,7 @@ if prompt := st.chat_input("What brings you here today?"):
                 )
                 
                 full_response = result["messages"][-1].content
-                status.update(label="There you go!", state="complete", expanded=False)
+                status.update(label="Done!", state="complete", expanded=False)
             
             # Success display
             response_placeholder.write(full_response)
