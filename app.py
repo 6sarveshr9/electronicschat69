@@ -29,7 +29,7 @@ st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("{my_bg_url}");
+        background-image: url("{https://github.com/6sarveshr9/electronicschat69/blob/a4fb999ede6803cdd93eaa4b6d1a37d3983c26ae/gargantua-endurance-5120x3662-25445.jpg}");
         background-attachment: fixed;
         background-size: cover;
     }}
